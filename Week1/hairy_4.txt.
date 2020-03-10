@@ -1,0 +1,20 @@
+Input: an array of students (with hair length as an attribute), of length l: arr
+Output: an array of all tuples of three unique students and their average hair length
+
+	result ← an empty array of 3-tuples of length (l/3). Choose 3 from l.
+	arrTups ← []
+	for i ∈ 0 . . . l−1 do
+		for j ∈ i + 1 . . . l−1 do
+			for k ∈ j + 1 . . . l−1 do
+				tup ← (arr[i], arr[j], arr[k])
+				arrTups add tup
+			end for
+		end for
+	end for
+
+	for i ∈ 0 . . . arrTups.length do
+		relativeHair ← avgHairLength(arrTups[i] - avgHairLength(arr \ arrTups[i])
+		result[m] ← (tup, relativeHair)
+		m++
+	end for
+	return result

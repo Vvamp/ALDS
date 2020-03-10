@@ -1,0 +1,4 @@
+Het algorithme krijgt een lijst met elementen mee en een max. De lijst loopt tot de helft van de array en telt de keren dat die geloopt heeft op in i, j wordt hiervan het spiegelbeeld.
+Dus met een array van 10 elementen, is i de eerste keer 0 en j 10. De tweede keer is i 1 en j 9, etc.
+Het algorithme loopt dus door de helf van de lijst en berekent de som van alle elementen die tussen i en j inzitten en voegt deze toe aan een nieuwe array als ze kleiner zijn dan max.
+Als ze groter zijn dan max, wordt max in de array gestopt.
