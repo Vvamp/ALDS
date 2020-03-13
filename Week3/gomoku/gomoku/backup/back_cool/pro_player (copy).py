@@ -41,17 +41,23 @@ class pro_player:
         else:
             self.game.move(last_move)
             self.n_root = self.n_root.new_root(last_move)
-            self.n_root.moves = valid_moves
+            # self.n_root.moves = self.game.valid_moves()
 
-        for i in range(100):                                                       
+        for i in range(100):                                                        # <<<<< !!!! Change to 'out of time' loop
             n_leaf = self.FindSpotToExpand( self.n_root )
             val    = self.rollout( n_leaf )
             self.BackupValue( n_leaf, val )
 
-        best = self.n_root.best_child().current
+        # pprint(gomoku.prettyboard(self.game.board))
+        # print(self.black)
 
-        self.game.move(best)
-        self.n_root = self.n_root.new_root(best)
+        best = self.n_root.uct().current
+
+        # print(best)
+        # print("===>", self.ply, "\n")
+
+        self.game.move(last_move)
+        # self.n_root = self.n_root.new_root(last_move)
         self.ply += 2
 
         return best
@@ -59,14 +65,17 @@ class pro_player:
 
     def FindSpotToExpand(self, node):
 
+        if node.is_terminal():                                                          # Check if game finished
+            return node
+
         if not node.is_fully_expanded():                                                # Is fully expanded?
             action       = random.choice(node.moves)
-            # node.moves.remove(action)
-            new_moves    = copy.deepcopy( node.moves )
-            new_moves.remove(action)
-            
-            # new_state    = node.move(action)
-            new_node     = mcts.MCTS_Node(state=self.game, valid_moves=new_moves, parent=node, current=action)
+            node.moves.remove(action)
+
+            new_moves = copy.deepcopy(node.moves)
+
+            new_state    = node.move(action)
+            new_node     = mcts.MCTS_Node(state=new_state[0], valid_moves=new_moves, parent=node, current=action)
             node.children.append(new_node)
             
             return new_node
@@ -80,7 +89,7 @@ class pro_player:
 
         score = 0
 
-        while len(node.moves) > 0 and node.state is not None:
+        while node.state is not None:
             
             action             = node.rollout_policy()                                  # Generate random action by using the rollout policy
             new_state, result  = node.move(action)                                      # Peform the action, return the new state and result if excist
@@ -93,11 +102,17 @@ class pro_player:
 
     def BackupValue(self, node, value):
         
-        while node is not None and node.state is not None:
+        while node is not None:
 
             node.n += 1                                                                 # Increment the number of visits
 
-            if self.is_oppponent(node.state.ply):                                             # Check if ply is opponent,
+            try:                                                                        # Get the current ply that is equal to the node
+                game_ply = node.state.ply
+
+            except AttributeError:
+                game_ply = node.parent.state.ply + 1
+
+            if self.is_oppponent(game_ply):                                             # Check if ply is opponent,
                 node.q = node.q - value                                                 # If True: Minimize value
 
             else:

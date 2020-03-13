@@ -161,7 +161,15 @@ def multiStartLocalSearch4CoG(coordinationGraph, noIterations):
     :return: the best local optimum found and its reward
     """
     solution = None
-    reward = 0
+    reward = float("-inf")
+   
+    for i in range(0, noIterations):
+        currentSolution = localSearch4CoG(coordinationGraph, coordinationGraph.randomSol())
+        currentReward = coordinationGraph.evaluateSolution(currentSolution)
+        if currentReward > reward:
+            reward = currentReward
+            solution = currentSolution
+        
     return solution, reward
 
 
@@ -175,16 +183,32 @@ def iteratedLocalSearch4CoG(coordinationGraph, pChange, noIterations):
     :param noIterations:  the number of iterations
     :return: the best local optimum found and its reward
     """
-    solution = None
-    reward = 0
-    return solution, reward
 
-###TODO OPTIONAL: implement genetic local search.
+    solution = None
+    reward = float("-inf")
+
+    for i in range(0, noIterations):
+            currentSolution = localSearch4CoG(coordinationGraph, coordinationGraph.randomSol())
+            currentReward = coordinationGraph.evaluateSolution(currentSolution)
+
+            for index in currentSolution:
+                r = random.random()
+                if r < pChange:
+                    currentSolution[index] = random.randint(0,3)
+                
+            if currentReward > reward:
+                reward = currentReward
+                solution = currentSolution
+
+    return solution, reward
 
 nVars = 50
 nActs = 3
 cog = coordinationGraph(nVars,1.5/nVars,nActs)
-localSearch4CoG(cog, cog.randomSol())
+
+# localSearch4CoG(cog, cog.randomSol())
+# multiStartLocalSearch4CoG(cog, 10)
+iteratedLocalSearch4CoG(cog, 1, 10)
 
 # print(cog.nodesAndConnections)
 # print(cog.edges)

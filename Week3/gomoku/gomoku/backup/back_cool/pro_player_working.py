@@ -43,12 +43,15 @@ class pro_player:
             self.n_root = self.n_root.new_root(last_move)
             self.n_root.moves = valid_moves
 
-        for i in range(100):                                                       
+        for i in range(100):                                                        # <<<<< !!!! Change to 'out of time' loop
             n_leaf = self.FindSpotToExpand( self.n_root )
             val    = self.rollout( n_leaf )
             self.BackupValue( n_leaf, val )
 
         best = self.n_root.best_child().current
+
+        # print(best)
+        # print("===>", self.ply, "\n")
 
         self.game.move(best)
         self.n_root = self.n_root.new_root(best)
@@ -58,6 +61,9 @@ class pro_player:
 
 
     def FindSpotToExpand(self, node):
+
+        # if node.is_terminal():                                                          # Check if game finished
+        #     return node
 
         if not node.is_fully_expanded():                                                # Is fully expanded?
             action       = random.choice(node.moves)
