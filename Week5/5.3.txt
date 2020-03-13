@@ -1,0 +1,1 @@
+The best achieved reward we managed to easily get was '58.51981192021519', with a pChange of '0.005'. We achieved this by simply checking every value between 1/1 and 1/346. This number is easily changeable and we could easily make it higher, but we found this good enough.
