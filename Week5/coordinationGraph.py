@@ -1,5 +1,6 @@
 import random
 import copy
+import matplotlib
 from queue import Queue as queue
 
 class edge:
@@ -141,7 +142,6 @@ def localSearch4CoG(coordinationGraph, initialSolution):
             delta = coordinationGraph.evaluateChange(initialSolution, i, ai)
             
             if delta > 0:
-                print("Better Solution Found")
                 # If the reward is higher, set the initial solution's solution to the new solution
                 initialSolution[i] = ai
 
@@ -154,8 +154,6 @@ def localSearch4CoG(coordinationGraph, initialSolution):
 
 def multiStartLocalSearch4CoG(coordinationGraph, noIterations):
     """
-    TODO: Implement multi-start local search
-
     :param coordinationGraph: the coordination graph to optimise for
     :param noIterations:  the number of times local search is run
     :return: the best local optimum found and its reward
@@ -175,8 +173,6 @@ def multiStartLocalSearch4CoG(coordinationGraph, noIterations):
 
 def iteratedLocalSearch4CoG(coordinationGraph, pChange, noIterations):
     """
-    TODO: Implement iterated local search
-
     :param coordinationGraph: the coordination graph to optimise for
     :param pChange: the perturbation strength, i.e., when mutating the solution, the probability for the value of a given
                     decision variable to be set to a random value.
@@ -208,7 +204,8 @@ cog = coordinationGraph(nVars,1.5/nVars,nActs)
 
 # localSearch4CoG(cog, cog.randomSol())
 # multiStartLocalSearch4CoG(cog, 10)
-iteratedLocalSearch4CoG(cog, 1, 10)
+aSol,aReward = iteratedLocalSearch4CoG(cog, 1, 10)
+
 
 # print(cog.nodesAndConnections)
 # print(cog.edges)
