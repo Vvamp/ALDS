@@ -205,26 +205,8 @@ nVars = 50
 nActs = 3
 cog = coordinationGraph(nVars,1.5/nVars,nActs)
 
-# localSearch4CoG(cog, cog.randomSol())
-# multiStartLocalSearch4CoG(cog, 10)
-
-### 5.3 - Script to run iterated local search 'tries' times.
-# bestNum = float("-inf")
-# bestSol = None
-# tries = 346
-# bpch = float("-inf")
-# print("Attempting Iterated local search {} times...".format(tries), end="")
-# for i in range(1, tries+1):
-#     pc = 1/i
-#     aSol,aReward = iteratedLocalSearch4CoG(cog, pc, 10)
-#     if(aReward > bestNum):
-#         bestNum = aReward
-#         bestSol = aSol
-#         bpch = pc
-# print("Done!")
-# print("Best Reward: {}\nWith pChange: {}".format(bestNum, bpch))
-
 ### 5.2
+print("Running 5.2...", end="")
 lsVals = []
 count = 100
 for i in range(0, count):
@@ -234,17 +216,34 @@ for i in range(0, count):
     localSol = localSearch4CoG(cogn, rndSol)
     rew = cogn.evaluateSolution(localSol)
     lsVals.append(rew)
-
-# lsVals.sort()
-# plt.subplot(211)    
 plt.title("5.2 - Histogram of rewards found via local search")
 plt.ylabel("Count")
 plt.xlabel("Local Reward")
 plt.hist(x=lsVals, bins=50)
 plt.show()
+print(" ...DONE!")    
+
+
+### 5.3 - Script to run iterated local search 'tries' times.
+print("Running 5.3...")
+bestNum = float("-inf")
+bestSol = None
+tries = 346
+bpch = float("-inf")
+print("Attempting Iterated local search {} times...".format(tries), end="")
+for i in range(1, tries+1):
+    pc = 1/i
+    aSol,aReward = iteratedLocalSearch4CoG(cog, pc, 10)
+    if(aReward > bestNum):
+        bestNum = aReward
+        bestSol = aSol
+        bpch = pc
+print("Done!")
+print("Best Reward: {}\nWith pChange: {}".format(bestNum, bpch))
 
 
 ### 5.5
+print("Running 5.5...", end="")
 count=100
 ilsVals = []
 mlsVals = []
@@ -278,4 +277,6 @@ plt.xlim(1, 10)
 
 plt.legend()
 plt.show()
+print(" ...DONE!")
+
 
