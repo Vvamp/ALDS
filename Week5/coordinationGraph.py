@@ -235,8 +235,47 @@ for i in range(0, count):
     rew = cogn.evaluateSolution(localSol)
     lsVals.append(rew)
 
-lsVals.sort()
-plt.plot(lsVals)
+# lsVals.sort()
+# plt.subplot(211)    
+plt.title("5.2 - Histogram of rewards found via local search")
+plt.ylabel("Count")
+plt.xlabel("Local Reward")
+plt.hist(x=lsVals, bins=50)
 plt.show()
 
+
+### 5.5
+count=100
+ilsVals = []
+mlsVals = []
+bestIlsRew = float("-inf")
+bestMlsRew = float("-inf")
+cogn = coordinationGraph(nVars, 1.5/nVars, nActs)
+for i in range(0, count):
+    rndSol = cogn.randomSol()
+
+    mlsSol, mlsRew = multiStartLocalSearch4CoG(cogn, 10)
+    ilsSol, ilsRew = iteratedLocalSearch4CoG(cogn, random.randint(1, 1000)/1000, 10)
+    
+    if(mlsRew > bestMlsRew):
+        bestMlsRew = mlsRew
+    if(ilsRew > bestIlsRew):
+        bestIlsRew = ilsRew
+
+
+    mlsVals.append(bestIlsRew)
+    ilsVals.append(bestMlsRew)
+
+plt.title("5.5 - Plot of highest quality/reward as a function of the iteration")
+xInfo = list(range(1,count+1))
+
+plt.plot(xInfo,ilsVals, label="Iterated Local Search")
+plt.plot(xInfo,mlsVals, label="Multi Start Local Search")
+
+plt.xlabel("Iteration")
+plt.ylabel("Best Quality/Reward")
+plt.xlim(1, 10)
+
+plt.legend()
+plt.show()
 
