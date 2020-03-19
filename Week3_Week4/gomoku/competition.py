@@ -1,14 +1,13 @@
 import gomoku
 import random_player
-import pro_player
 import time
-
+import vplayer
 class competition:
     """This class runs the competition between the submitted players.
     A player needs to have the new_game(black) and move(board, prev_move, valid_moves_list)
     methods implemented. Players are registered one by one using the register_player method.
     The competition is started using the play_competition method."""
-    def __init__(self, bsize_=13):
+    def __init__(self, bsize_=19):
         """Initialises the competition. The board size (default 19) for the entire competition can be set here."""
         self.players = []
         self.results = []
@@ -19,9 +18,10 @@ class competition:
         This player needs to be in a separate file."""
         self.players.append(player_)
 
-    def play_competition(self, maxtime_per_move=1000, tolerance=0.05):
+    def play_competition(self, maxtime_per_move=500, tolerance=0.05):
         """This method runs the actual competition between the registered players.
         Each player plays each other player twice: once with black and once with white."""
+        round=0
         self.results = []
         mtime = maxtime_per_move * (1.0+tolerance) * 1000000 #operational maxtime in nanoseconds
         for i in range(len(self.players)):
@@ -35,6 +35,9 @@ class competition:
                 game = gomoku.gomoku_game(bsize_=self.bsize) #initialise the game
                 over = False
                 while not over:
+                    round+=1
+                    # print("Round {}".format(round))
+                    # gomoku.prettyboard(game.current_board())
                     if game.ply%2==1: #black to move
                         current_player = self.players[i]
                         pid = i
@@ -43,27 +46,31 @@ class competition:
                         current_player = self.players[j]
                         pid = j
                         pid_other = i
+                    # print("to move: {}".forcmat(current_player.id()))
                     # start_time = time.time_ns()
                     move = current_player.move(game.current_board(), game.previous_move, game.valid_moves(), max_time_to_move=maxtime_per_move)
                     # stop_time = time.time_ns()
                     #print(str((stop_time-start_time)/1000000)+"/"+str(maxtime_per_move*(1+tolerance)))
                     ok, win = game.move(move) #perform the move, and obtain whether the move was valid (ok) and whether the move results in a win
+    
                     # if  (stop_time-start_time) > mtime:
                         #player who made the illegal move should be disqualified. This needs to be done manually.
                         # print("disqualified for exceeding maximum time per move: player "+str(pid))
                     if not ok:
                         #player who made the illegal move should be disqualified. This needs to be done manually.
-                        print("disqualified for illegal move: player "+str(pid))
+                        print("disqualified for illegal move: player "+str(pid)+current_player.id())
                         print("on board: ")
-                        gomoku.prettyboard(game.current_board())
                         print("trying to play: ("+str(move[0])+","+str(move[1])+")")
                         if game.ply % 2 == 1:
                             print("as black")
                         else:
                             print("as white")
+                        exit()
                     if win:
                         over = True
                         self.results[pid][pid_other] += 1
+                        # gomoku.prettyboard(game.current_board())
+
                     elif len(game.valid_moves()) == 0:
                         #if there are no more valid moves, the board is full and it's a draw
                         over = True
@@ -87,10 +94,13 @@ game = gomoku.gomoku_game()
 player = random_player.random_dummy_player()
 # player = pro_player.pro_player()
 player2 = pro_player.pro_player()
-player3 = random_player.random_dummy_player()
+player3 = niels_player.niels_player()
+player4 = vplayer.vvamp_player()
 comp = competition()
-comp.register_player(player)
+# comp.register_player(player)
+# comp.register_player(player3)
 comp.register_player(player2)
-comp.register_player(player3)
+comp.register_player(player4)
+
 comp.play_competition()
 comp.print_scores()
