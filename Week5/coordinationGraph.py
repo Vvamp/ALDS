@@ -116,6 +116,10 @@ class coordinationGraph:
 
 
 def randomKeysToQueue(coordinationGraph):
+    """
+    :param coordinationGraph: the coordination graph to randomise the keys of
+    :return: a shuffled queue of keys
+    """
     temp = []
     q = queue()
     for key in coordinationGraph.nodesAndConnections.keys():
