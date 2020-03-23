@@ -82,7 +82,6 @@ class coordinationGraph:
         for i in range(len(solution)):
             for j in self.nodesAndConnections[i]:
                 if(j>i):
-                    # print( "("+str(i)+","+str(j)+") -> "+str(self.edges[(i,j)].localReward(solution[i], solution[j])))
                     result += self.edges[(i,j)].localReward(solution[i], solution[j])
         return result
 
@@ -111,7 +110,7 @@ class coordinationGraph:
     def randomSol(self):
         solution = []
         for i in range(0, len(self.nodesAndConnections)):
-            solution.append(random.randint(0,2))
+            solution.append(random.randint(0,nActs-1))
         return solution
 
 
@@ -212,7 +211,7 @@ cog = coordinationGraph(nVars,1.5/nVars,nActs)
 ### 5.2
 print("Running 5.2...", end="")
 lsVals = []
-count = 100
+count = 50
 for i in range(0, count):
     seed = random.randint(0, 10000)
     cogn = coordinationGraph(nVars, 1.5/nVars, nActs, seed)
@@ -232,7 +231,7 @@ print(" ...DONE!")
 print("Running 5.3...")
 bestNum = float("-inf")
 bestSol = None
-tries = 346
+tries = 10
 bpch = float("-inf")
 print("Attempting Iterated local search {} times...".format(tries), end="")
 for i in range(1, tries+1):
@@ -248,7 +247,7 @@ print("Best Reward: {}\nWith pChange: {}".format(bestNum, bpch))
 
 ### 5.5
 print("Running 5.5...", end="")
-count=100
+count=50
 ilsVals = []
 mlsVals = []
 bestIlsRew = float("-inf")
