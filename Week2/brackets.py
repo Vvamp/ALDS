@@ -103,7 +103,8 @@ class myStack () :
 		return self.list[len(self.list)-1]
 
 
-
+# TODO: Dictionary en input via parameter
+#return en bool
 def Brackets():
 	exprBrackets = myStack()
 	brackets = ['<', '>', '[', ']', '(' ,')']

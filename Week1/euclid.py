@@ -2,9 +2,7 @@
 
 def calcGCD(p, q):
 	if p < q:
-		tmp = q
-		q = p 
-		p = tmp 
+		return calcGCD(q%p, p)
 
 	if q == 0:
 		return p

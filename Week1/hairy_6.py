@@ -36,6 +36,7 @@ from __main__ import students
 st = students
 """
 
+#TODO: Average hair length van de klas eerst, voor de 3 for loops. dan kan ik daarna de average van de 3 studenten uitrekenen
 def hairy2(arr):
     result = []
     arrTups = []

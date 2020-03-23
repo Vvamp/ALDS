@@ -39,10 +39,11 @@ def rollout(n):
     s = copy.deepcopy(n)
     while not s.isFullyExpanded() and boardFull(s.gamestate.current_board()) :
         a = s.randomMove(s.board)
-        win,r = s.gamestate.move(a)
-        prettyboard(s.gamestate.current_board())
-        
-        result = r
+        win,result = s.gamestate.move(a)
+
+        # TODO: break when win or loss
+        # TODO: Docstrings
+        # TODO mail jorn
     return result
 
 def boardFull(board):

@@ -35,3 +35,6 @@ print("\n")
 x = quick_sort(l, 0, len(l)-1)
 
 print("Sorted array: {}".format(x))
+
+
+# explanations! 

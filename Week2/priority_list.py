@@ -5,6 +5,7 @@
 #	- dequeue()		=	O(n)
 #	- contains()	=	O(n)
 #	- remove()		=	O(n)
+# TODO: Waarom koos ik voor een list(researched/resource-wise)
 
 # Works as of 3-12-2019
 import math

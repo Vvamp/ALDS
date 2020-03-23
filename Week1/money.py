@@ -39,3 +39,4 @@ setattr(moneyRec, 'matrix', mat)
 # Calculate and show the possible combinations recursively
 print("There are {} possible combinations to get to {} cents!".format(moneyRec(findMoney), findMoney))
 
+#Make the function so that it requires less resources/more dynamically located

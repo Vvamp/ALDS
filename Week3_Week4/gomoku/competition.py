@@ -92,15 +92,12 @@ class competition:
 # When the students submit a player file, they should be entered one by one.
 game = gomoku.gomoku_game()
 player = random_player.random_dummy_player()
-# player = pro_player.pro_player()
-player2 = pro_player.pro_player()
-player3 = niels_player.niels_player()
-player4 = vplayer.vvamp_player()
+player2 = vplayer.vvamp_player()
 comp = competition()
-# comp.register_player(player)
-# comp.register_player(player3)
+
+
+comp.register_player(player)
 comp.register_player(player2)
-comp.register_player(player4)
 
 comp.play_competition()
 comp.print_scores()
