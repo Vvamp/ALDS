@@ -1,12 +1,12 @@
 # Data structure chosen: List
-# Reason: It's easy to use, flexible and it's easy to read.
+# Reason: I chose for a list because there is no way to use an array(as the size is dynamic). Another possibility could have been a linked list, but I chose not to. I chose a list over a linked list, because linked lists are faster when adding elements at the middle of the list. However, regular lists win when adding/removing elements at the end of the list. And this is what I'm mostly working with. Source: https://stackoverflow.com/a/169983/7170105
 # Time complexity: 
 #   - queue()		=	O(1) 
 #	- dequeue()		=	O(n)
 #	- contains()	=	O(n)
 #	- remove()		=	O(n)
-# TODO: Waarom koos ik voor een list(researched/resource-wise)
 
+# Feedback: Add a reason
 # Works as of 3-12-2019
 import math
 class PriorityNode:

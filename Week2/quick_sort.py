@@ -1,7 +1,11 @@
 # Works as of 3-12-2019
 import random
 def partition(a, lo, hi):
+	"""
+	Move all values smaller than the index higher to the left and return the index of the last change(basically our pivot)
+	"""
 	pivot = a[hi]
+	print(f"Pivot: {pivot}")
 	i = lo
 	for j in range(lo, hi):
 		if a[j] <= pivot:
@@ -13,12 +17,15 @@ def partition(a, lo, hi):
 
 
 def quick_sort(a, lo, hi):
+	"""
+	Sort array 'a' via quick sort
+	"""
 	if lo >= hi:
-		return a 
+		return a
 
-	p = partition(a, lo, hi)
-	a = quick_sort(a, lo, p-1)
-	a = quick_sort(a, p+1, hi)
+	p = partition(a, lo, hi)	# Attempt to sort array and return current pivot
+	a = quick_sort(a, lo, p-1) 	# Partition values left of current pivot
+	a = quick_sort(a, p+1, hi)	# Partition values right of current pivot
 	return a
 
 # Testing
@@ -37,4 +44,5 @@ x = quick_sort(l, 0, len(l)-1)
 print("Sorted array: {}".format(x))
 
 
-# explanations! 
+#Feedback: comments
+

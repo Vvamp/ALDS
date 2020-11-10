@@ -103,33 +103,41 @@ class myStack () :
 		return self.list[len(self.list)-1]
 
 
-# TODO: Dictionary en input via parameter
-#return en bool
-def Brackets():
+def Brackets(input, rules):
 	exprBrackets = myStack()
-	brackets = ['<', '>', '[', ']', '(' ,')']
 
-	expression = input("Expression > ")
 	for char in expression:
-		if char not in brackets:
-			print("Invalid Input!")
-			return
+		if char not in rules:
+			print(f"Error > Invalid Input! Unknown character '{char}'.")
+			return False
 		else:
-			if char is brackets[0] or char is brackets[2] or char is brackets[4]:
+			# Check if character is any starting character and if it is, add it to the stack
+			if char is rules[0] or char is rules[2] or char is rules[4]:
 				exprBrackets.push(char)
 			else:
+				# If the character is not a starting character and thus an end character, remove the matching bracket
+				# Matching bracket by checking if the current character to match is equal to the matching start character AND the exprbrackets is not empty
 				bracketIndex = brackets.index(char)
-				if exprBrackets.peek() is brackets[bracketIndex-1] and exprBrackets.peek() != -1:
+				if exprBrackets.peek() is rules[bracketIndex-1] and exprBrackets.peek() != -1:
 					exprBrackets.pop()
 				else:
-					print("Invalid expression!")
-					return
+					return False
 
 	if exprBrackets.isEmpty():
-		print("Valid expression!")
+		return True
 	else:
-		print("Invalid expression!")
+		return False
 
-Brackets()
+
+
+brackets = ['<', '>', '[', ']', '(' ,')']
+expression = input("Expression > ")
+
+if Brackets(expression, brackets):
+	print("Valid expression!")
+else:
+	print("Error > Invalid expression!")
+
+# Feedback fixed: Give the dictionary and input via parameters and return a bool
 
 print("-- Program Complete --")
