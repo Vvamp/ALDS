@@ -1,7 +1,11 @@
 import gomoku
-import random_player
+from random_agent import random_dummy_player
+from v2player import vvamp_player
 import time
-import vplayer
+
+# NB: python version 3.7 or higher is required (else time_ns()) doesn't work
+
+
 class competition:
     """This class runs the competition between the submitted players.
     A player needs to have the new_game(black) and move(board, prev_move, valid_moves_list)
@@ -18,61 +22,62 @@ class competition:
         This player needs to be in a separate file."""
         self.players.append(player_)
 
-    def play_competition(self, maxtime_per_move=500, tolerance=0.05):
+    def play_competition(self, maxtime_per_move=1000, tolerance=0.05):
         """This method runs the actual competition between the registered players.
         Each player plays each other player twice: once with black and once with white."""
-        round=0
         self.results = []
-        mtime = maxtime_per_move * (1.0+tolerance) * 1000000 #operational maxtime in nanoseconds
+        mtime = maxtime_per_move * (1.0+tolerance) * 1000000  # operational maxtime in nanoseconds
         for i in range(len(self.players)):
-            self.results.append([0.0]*len(self.players)) #set the results matrix to all zeroes
+            self.results.append([0.0]*len(self.players))  # set the results matrix to all zeroes
         for i in range(len(self.players)):
             for j in range(len(self.players)):
-                if (i==j):
-                    continue #players do not play themselves
-                self.players[i].new_game(True) #player i is black
-                self.players[j].new_game(False) # player j is white
-                game = gomoku.gomoku_game(bsize_=self.bsize) #initialise the game
+                if (i == j):
+                    continue  # players do not play themselves
+                self.players[i].new_game(True)  # player i is black
+                self.players[j].new_game(False)  # player j is white
+                game = gomoku.starting_state(bsize_=self.bsize)  # initialise the game
+                previous_move = ()
                 over = False
+                currentRound = 1
                 while not over:
-                    round+=1
-                    # print("Round {}".format(round))
-                    # gomoku.prettyboard(game.current_board())
-                    if game.ply%2==1: #black to move
+                    print("Current Round: ", currentRound)
+                    if game[1] % 2 == 1:  # black to move
                         current_player = self.players[i]
                         pid = i
                         pid_other = j
-                    else: #white to move
+                    else:  # white to move
                         current_player = self.players[j]
                         pid = j
                         pid_other = i
-                    # print("to move: {}".forcmat(current_player.id()))
-                    # start_time = time.time_ns()
-                    move = current_player.move(game.current_board(), game.previous_move, game.valid_moves(), max_time_to_move=maxtime_per_move)
-                    # stop_time = time.time_ns()
-                    #print(str((stop_time-start_time)/1000000)+"/"+str(maxtime_per_move*(1+tolerance)))
-                    ok, win = game.move(move) #perform the move, and obtain whether the move was valid (ok) and whether the move results in a win
-    
-                    # if  (stop_time-start_time) > mtime:
-                        #player who made the illegal move should be disqualified. This needs to be done manually.
-                        # print("disqualified for exceeding maximum time per move: player "+str(pid))
+                    start_time = time.time_ns()
+                    move = current_player.move(game, previous_move, max_time_to_move=maxtime_per_move)
+                    stop_time = time.time_ns()
+                    currentRound+=1
+                    # print(str((stop_time-start_time)/1000000)+"/"+str(maxtime_per_move*(1+tolerance)))
+                    ok, win, game = gomoku.move(game, move)  # perform the move, and obtain whether the move was valid (ok) and whether the move results in a win
+                    previous_move = move
+                    # Uncomment the follwing two lines if you want to watch the games unfold slowly:
+                    # time.sleep(1)
+                    # gomoku.pretty_board(game[0])
+                    # print("\n")
+                    if (stop_time-start_time) > mtime:
+                        # player who made the illegal move should be disqualified. This needs to be done manually.
+                        print("disqualified for exceeding maximum time per move: player "+str(pid))
                     if not ok:
-                        #player who made the illegal move should be disqualified. This needs to be done manually.
-                        print("disqualified for illegal move: player "+str(pid)+current_player.id())
+                        # player who made the illegal move should be disqualified. This needs to be done manually.
+                        print("disqualified for illegal move: player "+str(pid))
                         print("on board: ")
+                        gomoku.pretty_board(game[0])
                         print("trying to play: ("+str(move[0])+","+str(move[1])+")")
-                        if game.ply % 2 == 1:
+                        if game[1] % 2 == 1:
                             print("as black")
                         else:
                             print("as white")
-                        exit()
                     if win:
                         over = True
                         self.results[pid][pid_other] += 1
-                        # gomoku.prettyboard(game.current_board())
-
-                    elif len(game.valid_moves()) == 0:
-                        #if there are no more valid moves, the board is full and it's a draw
+                    elif len(gomoku.valid_moves(game)) == 0:
+                        # if there are no more valid moves, the board is full and it's a draw
                         over = True
                         self.results[pid][pid_other] += 0.5
                         self.results[pid_other][pid] += 0.5
@@ -87,17 +92,16 @@ class competition:
             i+=1
 
 
-##Now follows the main script for running the competition
+
+# Now follows the main script for running the competition
 # At present the competition consists of just three random dummy players playing each other
 # When the students submit a player file, they should be entered one by one.
-game = gomoku.gomoku_game()
-player = random_player.random_dummy_player()
-player2 = vplayer.vvamp_player()
+game = gomoku.starting_state()
+player = random_dummy_player()
+player2 = vvamp_player()
 comp = competition()
-
-
 comp.register_player(player)
 comp.register_player(player2)
-
-comp.play_competition()
+comp.play_competition(10000) #increase for more time
 comp.print_scores()
+
