@@ -11,6 +11,7 @@ class competition:
     A player needs to have the new_game(black) and move(board, prev_move, valid_moves_list)
     methods implemented. Players are registered one by one using the register_player method.
     The competition is started using the play_competition method."""
+
     def __init__(self, bsize_=19):
         """Initialises the competition. The board size (default 19) for the entire competition can be set here."""
         self.players = []
@@ -24,14 +25,19 @@ class competition:
 
     def play_competition(self, maxtime_per_move=1000, tolerance=0.05):
         """This method runs the actual competition between the registered players.
-        Each player plays each other player twice: once with black and once with white."""
+        Each player plays each other player twice: once with black and once with white.
+        """
         self.results = []
-        mtime = maxtime_per_move * (1.0+tolerance) * 1000000  # operational maxtime in nanoseconds
+        mtime = (
+            maxtime_per_move * (1.0 + tolerance) * 1000000
+        )  # operational maxtime in nanoseconds
         for i in range(len(self.players)):
-            self.results.append([0.0]*len(self.players))  # set the results matrix to all zeroes
+            self.results.append(
+                [0.0] * len(self.players)
+            )  # set the results matrix to all zeroes
         for i in range(len(self.players)):
             for j in range(len(self.players)):
-                if (i == j):
+                if i == j:
                     continue  # players do not play themselves
                 self.players[i].new_game(True)  # player i is black
                 self.players[j].new_game(False)  # player j is white
@@ -50,25 +56,39 @@ class competition:
                         pid = j
                         pid_other = i
                     start_time = time.time_ns()
-                    move = current_player.move(game, previous_move, max_time_to_move=maxtime_per_move)
+                    move = current_player.move(
+                        game, previous_move, max_time_to_move=maxtime_per_move
+                    )
                     stop_time = time.time_ns()
-                    currentRound+=1
+                    currentRound += 1
                     # print(str((stop_time-start_time)/1000000)+"/"+str(maxtime_per_move*(1+tolerance)))
-                    ok, win, game = gomoku.move(game, move)  # perform the move, and obtain whether the move was valid (ok) and whether the move results in a win
+                    ok, win, game = gomoku.move(
+                        game, move
+                    )  # perform the move, and obtain whether the move was valid (ok) and whether the move results in a win
                     previous_move = move
                     # Uncomment the follwing two lines if you want to watch the games unfold slowly:
                     # time.sleep(1)
-                    # gomoku.pretty_board(game[0])
+                    gomoku.pretty_board(game[0])
+                    print("by: " + str(pid) + "/" + str(current_player))
                     # print("\n")
-                    if (stop_time-start_time) > mtime:
+                    if (stop_time - start_time) > mtime:
                         # player who made the illegal move should be disqualified. This needs to be done manually.
-                        print("disqualified for exceeding maximum time per move: player "+str(pid))
+                        print(
+                            "disqualified for exceeding maximum time per move: player "
+                            + str(pid)
+                        )
                     if not ok:
                         # player who made the illegal move should be disqualified. This needs to be done manually.
-                        print("disqualified for illegal move: player "+str(pid))
+                        print("disqualified for illegal move: player " + str(pid))
                         print("on board: ")
                         gomoku.pretty_board(game[0])
-                        print("trying to play: ("+str(move[0])+","+str(move[1])+")")
+                        print(
+                            "trying to play: ("
+                            + str(move[0])
+                            + ","
+                            + str(move[1])
+                            + ")"
+                        )
                         if game[1] % 2 == 1:
                             print("as black")
                         else:
@@ -88,9 +108,8 @@ class competition:
         for line in self.results:
             for res in line:
                 print(str(res), end=" ")
-            print("["+self.players[i].id()+", "+str(sum(line))+"]")
-            i+=1
-
+            print("[" + self.players[i].id() + ", " + str(sum(line)) + "]")
+            i += 1
 
 
 # Now follows the main script for running the competition
@@ -102,6 +121,5 @@ player2 = vvamp_player()
 comp = competition()
 comp.register_player(player)
 comp.register_player(player2)
-comp.play_competition(10000) #increase for more time
+comp.play_competition(10000)  # increase for more time
 comp.print_scores()
-
