@@ -121,5 +121,5 @@ player2 = vvamp_player()
 comp = competition()
 comp.register_player(player)
 comp.register_player(player2)
-comp.play_competition(10000)  # increase for more time
+comp.play_competition(1000)  # increase for more time
 comp.print_scores()
