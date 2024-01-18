@@ -3,6 +3,7 @@ import random
 from gomoku import Move, GameState
 from GmUtils import GmUtils
 import time, copy, math
+from typing import Tuple
 
 # TOdo: I still don't win
 # Todo: memoization. Don't throw away any nodes with more plays than the current ply. Try to find the current node and continue with that as root node(as some nodes will already be finished)
@@ -75,36 +76,77 @@ def findSpotToExpand(root_node: Node):
     return newNode
 
 
+def findClosestMoveToRest(valid_moves, board):
+    def getFilledInSpots(board):
+        spots = []
+        for y in range(0, len(board)):
+            for x in range(0, len(board[y])):
+                if board[y][x] != 0:
+                    spots.append((x, y))
+        if not spots:
+            return random.choice(tuple(valid_moves))
+        return spots
+
+    def calculateDistance(move: Tuple, spot: Tuple):
+        return abs(spot[1] - move[1]) + abs(spot[0] - move[0])
+
+    spots = getFilledInSpots(board)
+
+    distances = []
+    for valid_move in valid_moves:
+        for spot in spots:
+            _distance = calculateDistance(valid_move, spot)
+            distances.append((_distance, valid_move))
+    distances.sort(
+        key=lambda x: x[0],
+    )
+    return distances[0][1]
+
+
+def findMovesThatMakeAWin(valid_moves, board):
+    return ""
+
+
+def make_informed_move(leaf_node: Node):
+    # Do any move that makes 4 in a row
+
+    # Do closest move
+    lastMove = findClosestMoveToRest(
+        leaf_node.get_valid_moves(), leaf_node.gameState[0]
+    )
+
+    # State after move and create new node
+    newState = copy.deepcopy(leaf_node.gameState)
+    GmUtils.addMoveToBoard(newState[0], lastMove, not leaf_node.isBlack)
+    newNode = Node(
+        newState, not leaf_node.isBlack, lastMove, not leaf_node.isPlayer, leaf_node
+    )
+    leaf_node.addChildNode(newNode)
+    return newNode
+
+
 def rollout(leaf_node: Node):
-    lastMove = None
-    isPlayer = leaf_node.isPlayer
-    isBlack = leaf_node.isBlack
     gameState = copy.deepcopy(leaf_node.gameState)
     currentNode = leaf_node
     valid_moves = currentNode.get_valid_moves()
 
     if len(valid_moves) == 0:
         currentNode.get_valid_moves()
-    while len(valid_moves) != 0:
+
+    if len(valid_moves) != 0:
         valid_moves = currentNode.get_valid_moves()
 
-        if len(valid_moves) == 0:
-            break
-        isPlayer = not isPlayer
-        isBlack = not isBlack
-        lastMove = random.choice(tuple(valid_moves))
-        newState = copy.deepcopy(currentNode.gameState)
-        GmUtils.addMoveToBoard(newState[0], lastMove, isBlack)
-        newNode = Node(newState, isBlack, lastMove, isPlayer, currentNode)
-        currentNode.addChildNode(newNode)
-        valid_moves = currentNode.get_valid_moves()
-        currentNode = newNode
+        currentNode = make_informed_move(leaf_node)
 
-    winnerExists = GmUtils.isWinningMove(lastMove, gameState[0])
+        valid_moves = currentNode.get_valid_moves()
+
+    winnerExists = GmUtils.isWinningMove(currentNode.lastMove, gameState[0])
     if winnerExists == False:
         return 0.5  # Tied
 
-    return GmUtils.isWinningMove(lastMove, gameState[0]) and isPlayer
+    return (
+        GmUtils.isWinningMove(currentNode.lastMove, gameState[0]) and leaf_node.isPlayer
+    )
 
 
 def backupValue(game_result, leaf_node: Node):

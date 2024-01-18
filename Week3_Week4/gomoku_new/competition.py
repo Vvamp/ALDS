@@ -65,7 +65,7 @@ class competition:
                     previous_move = move
                     # Uncomment the follwing two lines if you want to watch the games unfold slowly:
                     # time.sleep(1)
-                    # gomoku.pretty_board(game[0])
+                    gomoku.pretty_board(game[0])
                     if (stop_time - start_time) > mtime:
                         # player who made the illegal move should be disqualified. This needs to be done manually.
                         print(
